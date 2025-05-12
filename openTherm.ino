@@ -3,8 +3,8 @@
 #include <WiFi.h>
 #include <WebServer.h>
 
-const char* ssid = "Gas Boiler Panibrat";
-const char* password = "12345678";
+const char* ssid = "Gas Boiler"; // TODO: chose your ssid name
+const char* password = "12345678"; // TODO: change default
 
 const int inPin = 12;
 const int outPin = 13;
