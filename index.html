@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Boiler Monitor</title>
+    <style>
+        body { font-family: sans-serif; padding: 8px; }
+        .temperature { font-size: 4em; font-weight: bold; text-align: center; }
+        .label { font-weight: bold; }
+        .link {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+        }
+        .input {
+            width: auto;
+            height: 24px;
+            font-size: 1em;
+            margin-left: 10px;
+            border-radius: 4px;
+            border-width: 1px;
+            border-color: #eeecec;
+        }
+        .button { width: 100%; height: 40px; font-size: 1em; font-weight: bold; border-radius: 8px; margin-top: 20px}
+        .statusArea { background: #eeecec; padding: 2px 8px; border-radius: 8px;}
+    </style>
+</head>
+<body>
+<h2>Gas Boiler</h2>
+<div id="currentTemp"></div>
+<div class="statusArea">
+    <h2>Status:</h2>
+    <div id="status"></div>
+</div>
+<h3>Set Desired Temperature:</h3>
+<label for="tempInput">Set to:</label>
+<input class="input" type="number" id="tempInput" value="64" min="10" max="90">
+<button class="button" onclick="setTemperature()">Set</button>
+<a class="link" href="https://github.com/Panibrat/Gas-boiler-OpenTherm">Github Link</a>
+
+<script>
+    function fetchData() {
+        fetch('/data')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("currentTemp").innerHTML = `
+                <h1 class="temperature" id="currentTemp">${Number(data.temp).toFixed(1)} &#8451</h1>
+                `;
+                document.getElementById("status").innerHTML = `
+                  <p><span class="label">Heating:</span> ${data.ch}</p>
+                  <p><span class="label">Flame:</span> ${data.flame}</p>
+                  <p><span class="label">Fault:</span> ${data.fault}</p>
+                  <p><span class="label">Boiler Set Temp:</span> ${data.boilerSetTemp}  &#8451</p>
+                `;
+            });
+    }
+
+    function setTemperature() {
+        const val = document.getElementById("tempInput").value;
+        fetch(`/setTemp?value=${val}`);
+    }
+
+    setInterval(fetchData, 2000);
+    fetchData();
+</script>
+</body>
+</html>
